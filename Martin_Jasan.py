@@ -2,7 +2,6 @@ from dataclasses import dataclass
 import csv, os
 from typing import Tuple, List
 
-
 @dataclass
 class User:
     """
@@ -51,7 +50,7 @@ def load_csv(path: str) -> List[List[str]]:
     data = list(reader)
     return data
 
-def error_constructor(idx: int, validity: list) -> str:
+def error_constructor(index: int, validity: list) -> str:
     possible_errors = [" invalid first name"," invalid last name"," invalid phone number"]
     errors_occured = []
 
@@ -59,7 +58,7 @@ def error_constructor(idx: int, validity: list) -> str:
         if not bool:
             errors_occured.append(possible_errors[idx])
 
-    error_message = f"[ERROR - row {idx}]"
+    error_message = f"[ERROR - row {index}]"
     error_message += ",".join(errors_occured)
 
     return error_message
