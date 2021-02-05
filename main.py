@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-
+import csv, os
 from typing import Tuple, List
 
 
@@ -23,12 +23,65 @@ class User:
         return f"[USER] {self.first_name} " \
                f"{self.last_name} - {self.phone_number}"
 
+def is_valid_name(name: str) -> bool:
+    if name.isalpha():
+        return True
+    else:
+        return False
+
+def is_valid_number(number: str) -> bool:
+    if number.isdecimal():
+        return True
+    else:
+        return False
+
+def is_valid_user(user: list) -> List[bool]:
+    result = []
+    for name in user[:2]:
+        result.append(is_valid_name(name))
+    result.append(is_valid_number(user[2]))
+    return result
+
+
+def load_csv(path: str) -> List[List[str]]:
+    cwd = os.path.dirname(__file__)
+    f = open(os.path.join(cwd, path), 'r+', newline='')
+    reader = csv.reader(f)
+    f.seek(0)
+    data = list(reader)
+    return data
+
+def error_constructor(idx: int, validity: list) -> str:
+    error_message = f"[ERROR - row {idx}]"
+    is_added = False
+
+    if not validity[0]:
+        error_message += " invalid first name"
+        is_added = True
+    if not validity[1]:
+        if is_added:
+            error_message += ","
+        error_message += " invalid last name"
+    if not validity[2]:
+        if is_added:
+            error_message += ","
+        error_message += " invalid phone number"
+
+    return error_message
 
 def process_csv(path: str) -> Tuple[List[User], List[str]]:
-    # TODO finish this function
+    data = load_csv(path)
     users, errors = [],[]
-    return users,errors
 
+    for idx,user in enumerate(data[1:]):
+        validity = is_valid_user(user)
+        if validity[0] and validity[1] and validity [2]:
+            valid_user = User(user[0],user[1],user[2])
+            users.append(valid_user)
+        else:
+            error_message = error_constructor(idx,validity)
+            errors.append(error_message)
+    return users, errors
 
 def is_correct(users: [User], errors: [str]):
     assert users[0] == User("John", "Doe", "777777777")
@@ -42,11 +95,11 @@ def is_correct(users: [User], errors: [str]):
 
     return True
 
-
 users, errors = process_csv("users.csv")
 
 if is_correct(users, errors):
     print("This solution is correct")
+
 
 # The goal is to finish process_csv function to return valid User classes
 # from CSV with valid data and a list of errors.
