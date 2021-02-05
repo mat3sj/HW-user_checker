@@ -52,22 +52,15 @@ def load_csv(path: str) -> List[List[str]]:
     return data
 
 def error_constructor(idx: int, validity: list) -> str:
-    error_message = f"[ERROR - row {idx}]"
-    is_added = False
+    possible_errors = [" invalid first name"," invalid last name"," invalid phone number"]
+    errors_occured = []
 
-    if not validity[0]:
-        error_message += " invalid first name"
-        is_added = True
-    if not validity[1]:
-        if is_added:
-            error_message += ","
-        else:
-            is_added = True
-        error_message += " invalid last name"
-    if not validity[2]:
-        if is_added:
-            error_message += ","
-        error_message += " invalid phone number"
+    for idx, bool in enumerate(validity):
+        if not bool:
+            errors_occured.append(possible_errors[idx])
+
+    error_message = f"[ERROR - row {idx}]"
+    error_message += ",".join(errors_occured)
 
     return error_message
 
