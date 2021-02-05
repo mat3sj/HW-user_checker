@@ -61,6 +61,8 @@ def error_constructor(idx: int, validity: list) -> str:
     if not validity[1]:
         if is_added:
             error_message += ","
+        else:
+            is_added = True
         error_message += " invalid last name"
     if not validity[2]:
         if is_added:
